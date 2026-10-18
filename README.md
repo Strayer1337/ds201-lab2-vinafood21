@@ -51,7 +51,6 @@ Chạy các lệnh từ thư mục dự án. Mặc định ảnh được tăng 
 # LeNet
 python train.py --model lenet --data_root ".\VinaFood21"
 
-
 # GoogLeNet rút gọn
 python train.py --model googlenet --data_root ".\VinaFood21"
 
@@ -70,7 +69,7 @@ Checkpoint tốt nhất theo validation F1-macro, lịch sử CSV và loss curve
 
 ## Đánh giá trên test
 
-Ví dụ đánh giá checkpoint LeNet AvgPool:
+Ví dụ đánh giá checkpoint LeNet:
 
 ```powershell
 python evaluate.py --data_root ".\VinaFood21" --ckpt ".\outputs\lenet_aug\best.pt"
