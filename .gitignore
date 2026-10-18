@@ -1,0 +1,16 @@
+# Python bytecode and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Training outputs, checkpoints, and generated figures
+outputs/
+*.pt
+*.pth
+*.ckpt
+
+# VinaFood21 images are large; keep the dataset outside GitHub
+VinaFood21/
+
