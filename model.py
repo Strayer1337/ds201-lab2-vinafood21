@@ -43,8 +43,7 @@ class LeNet(nn.Module):
 
 
 class InceptionBlock(nn.Module):
-    """Inception block bốn nhánh; các nhánh giữ nguyên H và W."""
-
+    
     def __init__(self, in_ch, f1, f3r, f3, f5r, f5, fp):
         super().__init__()
 
@@ -83,7 +82,6 @@ class InceptionBlock(nn.Module):
 
 
 class GoogLeNet(nn.Module):
-    """GoogLeNet rút gọn gồm ba Inception block, không có auxiliary head."""
 
     def __init__(self, in_ch=3, num_classes=21):
         super().__init__()
@@ -118,7 +116,6 @@ class GoogLeNet(nn.Module):
         return self.fc(x)
 
 
-# Giữ alias để code cũ dùng GoogleNet vẫn chạy được.
 GoogleNet = GoogLeNet
 
 
@@ -169,7 +166,6 @@ class BasicBlock(nn.Module):
 
 
 class ResNet18(nn.Module):
-    """ResNet-18 huấn luyện từ đầu, cấu hình các stage [2, 2, 2, 2]."""
 
     def __init__(self, in_ch=3, num_classes=21):
         super().__init__()
@@ -214,8 +210,6 @@ class ResNet18(nn.Module):
 
 
 class PretrainedResNet(nn.Module):
-    """ResNet-50 ImageNet từ Hugging Face, thay classifier cho số lớp mới."""
-
     def __init__(
         self,
         num_classes=21,
@@ -272,8 +266,6 @@ class PretrainedResNet(nn.Module):
         features = torch.flatten(features, start_dim=1)
         return self.classifier(features)
 
-
-# Alias tương thích với cách viết cũ.
 PretrainedResnet = PretrainedResNet
 
 
