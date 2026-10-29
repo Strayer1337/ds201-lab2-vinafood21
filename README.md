@@ -11,14 +11,14 @@ Chương trình dùng Adam và báo cáo accuracy, precision-macro, recall-macro
 
 ## Cấu trúc dữ liệu
 
-Đặt dữ liệu cạnh các file Python theo cấu trúc:
+Đặt dataset ngoài repository, ở thư mục `VinaFood21` cùng cấp với thư mục project. Khi chạy lệnh từ thư mục project, đường dẫn là `..\VinaFood21`:
 
 ```text
 VinaFood21/
 ├── train/
 │   ├── ten_lop_1/
 │   └── ...
-├── val/                 # tùy chọn
+├── val/                 # được tạo từ train/
 │   ├── ten_lop_1/
 │   └── ...
 └── test/
@@ -26,9 +26,17 @@ VinaFood21/
     └── ...
 ```
 
-Mỗi split cần có thư mục con cho từng lớp. Nếu thiếu `val/`, chương trình sẽ tách validation ngẫu nhiên từ `train/` theo `--val_ratio` (mặc định 10%, seed mặc định 42). Validation dùng transform không augmentation. Tập test không bị dùng để tách dữ liệu.
+Mỗi split cần có thư mục con cho từng lớp. Tách `val/` từ `train/` một lần trước khi huấn luyện:
 
-Ảnh được resize theo kích thước của từng model và chuẩn hóa theo mean/std ImageNet. Thư mục dataset bị loại khỏi Git vì dữ liệu ảnh có dung lượng lớn; hãy tải/đặt dữ liệu riêng tại đường dẫn trên.
+```powershell
+python split_train_val.py --data_root "..\VinaFood21"
+```
+
+Script dùng `random_split` với `torch.Generator().manual_seed(42)`, chuyển mặc định 10% ảnh từ `train/` sang `val/` và giữ nguyên thư mục lớp. `test/` không bị thay đổi. Chạy script một lần; script sẽ dừng nếu `val/` đã tồn tại để tránh chia lại dữ liệu. Dùng cùng `VinaFood21/` này cho cả bốn model để chúng dùng chung phép chia train/validation.
+
+Nếu chưa tạo `val/`, `train.py` vẫn có thể tách validation tạm thời từ `train/` theo `--val_ratio` (mặc định 10%) và `--seed` (mặc định 42). Validation luôn dùng transform không augmentation. Tập test không được dùng trong quá trình huấn luyện.
+
+Ảnh được resize theo kích thước của từng model và chuẩn hóa theo mean/std ImageNet. Dataset nằm ngoài repository để không đẩy các ảnh dung lượng lớn lên GitHub.
 
 ## Cài đặt
 
@@ -49,18 +57,18 @@ Chạy các lệnh từ thư mục dự án. Mặc định ảnh được tăng 
 
 ```powershell
 # LeNet
-python train.py --model lenet --data_root ".\VinaFood21"
+python train.py --model lenet --data_root "..\VinaFood21"
 
 # GoogLeNet rút gọn
-python train.py --model googlenet --data_root ".\VinaFood21"
+python train.py --model googlenet --data_root "..\VinaFood21"
 
 # ResNet18: so sánh augmentation và không augmentation
-python train.py --model resnet18 --data_root ".\VinaFood21"
-python train.py --model resnet18 --data_root ".\VinaFood21" --no_augment
+python train.py --model resnet18 --data_root "..\VinaFood21"
+python train.py --model resnet18 --data_root "..\VinaFood21" --no_augment
 
 # ResNet-50: feature extraction (đóng băng backbone) và fine-tuning
-python train.py --model resnet50 --data_root ".\VinaFood21" --freeze_backbone
-python train.py --model resnet50 --data_root ".\VinaFood21"
+python train.py --model resnet50 --data_root "..\VinaFood21" --freeze_backbone
+python train.py --model resnet50 --data_root "..\VinaFood21"
 ```
 
 Kích thước ảnh mặc định: LeNet/GoogLeNet 64, ResNet18 96, ResNet-50 224. Có thể đổi bằng `--img_size`. ResNet-50 cần tải trọng số pretrained `microsoft/resnet-50` từ Hugging Face trong lần chạy đầu.
@@ -69,10 +77,10 @@ Checkpoint tốt nhất theo validation F1-macro, lịch sử CSV và loss curve
 
 ## Đánh giá trên test
 
-Ví dụ đánh giá checkpoint LeNet:
+Ví dụ đánh giá checkpoint LeNet AvgPool:
 
 ```powershell
-python evaluate.py --data_root ".\VinaFood21" --ckpt ".\outputs\lenet_aug\best.pt"
+python evaluate.py --data_root "..\VinaFood21" --ckpt ".\outputs\lenet_aug\best.pt"
 ```
 
 Đổi `--ckpt` sang checkpoint của model cần đánh giá. Báo cáo test gồm accuracy, precision-macro, recall-macro, F1-macro, precision/recall/F1 từng lớp và confusion matrix.

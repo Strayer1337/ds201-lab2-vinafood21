@@ -254,7 +254,6 @@ class PretrainedResNet(nn.Module):
     def train(self, mode=True):
         super().train(mode)
         if self.freeze_backbone:
-            # Giữ BatchNorm của backbone ở chế độ eval khi chỉ train classifier.
             self.resnet.eval()
         return self
 
